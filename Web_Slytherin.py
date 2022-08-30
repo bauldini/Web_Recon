@@ -23,9 +23,9 @@ ClientAck = input("Enter Client Acronym:\n")
 
 
 def robots():
-    response = req.get(f'https://www.{Domain}/robots.txt')
+    response = req.get(f'https://www.{Domain}.com/robots.txt')
     try:
-        os.path.exists("{ClientAck}_Robots.txt")
+        os.path.exists(f"{ClientAck}_Robots.txt")
     except True:
         f = open(f"{ClientAck}_Robots.txt", "x")
         f.write(response.text)
