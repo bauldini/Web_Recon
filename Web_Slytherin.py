@@ -23,7 +23,7 @@ ClientAck = input("Enter Client Acronym:\n")
 
 
 def robots():
-    response = req.get(f'https://www.{Domain}.com/robots.txt')
+    response = req.get(f'https://www.{Domain}/robots.txt')
     try:
         os.path.exists(f"{ClientAck}_Robots.txt")
     except True:
@@ -34,10 +34,10 @@ def robots():
 
 
 def url_crazy():
-    os.system("urlcrazy -p -f CSV -o {ClientAck}_urlcrazy.csv {Domain}")
+    os.system(f"urlcrazy -p -f CSV -o {ClientAck}_urlcrazy.csv {Domain}")
 
 def wafw00f():
-    os.system("wafw00f {Domain}")
+    os.system(f"wafw00f {Domain}")
 
 
 robots()
