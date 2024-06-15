@@ -1,23 +1,12 @@
-#! /usr/bin/env python3
+#!/usr/bin/env python3
 
 import requests as req
 import os
-import sys
 import argparse
 from os.path import exists
+from concurrent.futures import ThreadPoolExecutor
 
-##TO-DO##
-###HELP Section###
 # Ask for client name acronym#
-# set file name in Robots function
-# Run Nikto##
-##Run URLCrazy###
-##Run EyeWitness##
-##RunWAFW00F##
-##Gobuster or Dirbuster##
-
-# def Robots():
-
 Domain = input("Enter the client FQDN:\n")
 ClientAck = input("Enter Client Acronym:\n")
 
@@ -25,21 +14,34 @@ ClientAck = input("Enter Client Acronym:\n")
 def robots():
     response = req.get(f'https://www.{Domain}/robots.txt')
     try:
-        os.path.exists(f"{ClientAck}_Robots.txt")
-    except True:
-        f = open(f"{ClientAck}_Robots.txt", "x")
-        f.write(response.text)
-
-    # print(response.text)
+        if not exists(f"{ClientAck}_Robots.txt"):
+            with open(f"{ClientAck}_Robots.txt", "x") as f:
+                f.write(response.text)
+    except Exception as e:
+        print(f"Error in robots function: {e}")
 
 
 def url_crazy():
     os.system(f"urlcrazy -p -f CSV -o {ClientAck}_urlcrazy.csv {Domain}")
 
+
 def wafw00f():
     os.system(f"wafw00f {Domain}")
 
 
-robots()
-url_crazy()
-wafw00f()
+
+
+def main():
+    with ThreadPoolExecutor() as executor:
+        future_robots = executor.submit(robots)
+        future_url_crazy = executor.submit(url_crazy)
+        future_wafw00f = executor.submit(wafw00f)
+
+        # Wait for all threads to complete
+        future_robots.result()
+        future_url_crazy.result()
+        future_wafw00f.result()
+
+
+if __name__ == "__main__":
+    main()
